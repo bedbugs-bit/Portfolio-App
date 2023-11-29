@@ -21,15 +21,31 @@ import {
 } from "@mui/material";
 import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
+import { auth } from "../Firebase"; 
+import { signOut } from "firebase/auth"; // firebase signout
+import { useNavigate } from "react-router-dom";
+
+
 
 export default function Navbar({ isSidebarOpen, setIsSidebarOpen }) {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const navigate = useNavigate(); // useNavigate hook called here
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  // BELOW FUNCTION WILL LOGOUT THE CURRENT USER
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out: ", error.message);
+    }
+  };
 
   return (
     <Box>
@@ -124,7 +140,14 @@ export default function Navbar({ isSidebarOpen, setIsSidebarOpen }) {
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
               >
-                <MenuItem onClick={handleClose}>Log Out</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    handleLogout();
+                  }}
+                >
+                  Log Out
+                </MenuItem>
               </Menu>
             </FlexBetween>
           </FlexBetween>

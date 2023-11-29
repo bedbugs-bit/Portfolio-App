@@ -1,8 +1,8 @@
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import Dashboard from "scenes/Dashboard";
-import SignUpPage from "scenes/SignUpPage";
-import LoginPage from "scenes/LoginPage";
+import Signup from "scenes/SignUp";
+import Login from "scenes/Login";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import { themeSettings } from "theme";
@@ -23,9 +23,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/signup" element={<SignUpPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
