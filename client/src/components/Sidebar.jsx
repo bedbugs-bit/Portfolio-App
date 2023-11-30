@@ -26,12 +26,13 @@ import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 
 export default function Sidebar({
-  Imageurl,
+  
   user,
   drawerWidth,
   isSidebarOpen,
   setIsSidebarOpen,
   isNonMobile,
+  Imageurl,
 }) {
   const theme = useTheme();
 

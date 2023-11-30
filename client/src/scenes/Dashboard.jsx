@@ -6,6 +6,8 @@ import Sidebar from "components/Sidebar";
 import Navbar from "components/Navbar";
 import HomeInfo from "components/HomeInfo";
 import Projects from "components/Projects";
+
+
 import GithubActivity from "components/GithubActivity";
 
 export default function Dashboard() {
