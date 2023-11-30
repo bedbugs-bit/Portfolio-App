@@ -25,8 +25,11 @@ import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 
-export default function Sidebar({
-  
+
+
+
+
+export default function Sidebar({ 
   user,
   drawerWidth,
   isSidebarOpen,
