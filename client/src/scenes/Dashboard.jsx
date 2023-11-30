@@ -6,6 +6,7 @@ import Sidebar from "components/Sidebar";
 import Navbar from "components/Navbar";
 import HomeInfo from "components/HomeInfo";
 import Projects from "components/Projects";
+import UserDetails from "components/UserDetails";
 
 export default function Dashboard() {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -37,6 +38,12 @@ export default function Dashboard() {
         <Box id="home-info">
           <HomeInfo />
         </Box>
+        {/* User data display section */}
+        <Box id="projects-info">
+          <UserDetails />
+        </Box>
+        {/* User data display section */}
+
         <Box id="projects-info">
           <Projects />
         </Box>
