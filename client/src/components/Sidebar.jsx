@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -25,14 +25,18 @@ import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 
+import { auth, db } from "../Firebase"; // Ensure db is imported here
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+
 export default function Sidebar({
-  user,
   drawerWidth,
   isSidebarOpen,
   setIsSidebarOpen,
   isNonMobile,
 }) {
   const theme = useTheme();
+  const [firstName, setFirstName] = useState(""); // State to hold the user's first name
 
   const navItems = [
     {
@@ -57,6 +61,27 @@ export default function Sidebar({
       icon: <AddBoxOutlinedIcon />,
     },
   ];
+
+ useEffect(() => {
+   const unsubscribe = onAuthStateChanged(auth, async (user) => {
+     if (user) {
+       const userRef = doc(db, "users", user.uid);
+       try {
+         const userSnap = await getDoc(userRef);
+         if (userSnap.exists()) {
+           setFirstName(userSnap.data().firstName); // Set the first name
+         } else {
+           console.log("No such document!");
+         }
+       } catch (error) {
+         console.error("Error fetching user data:", error);
+       }
+     }
+   });
+
+   return () => unsubscribe(); // Unsubscribe on cleanup
+ }, []);
+  // ... rest of the component
 
   return (
     <Box component="nav">
@@ -186,9 +211,7 @@ export default function Sidebar({
                   fontSize="0.9rem"
                   sx={{ color: theme.palette.secondary[100] }}
                 >
-                  {/* the username from user object from firebase */}
-                  {/* {user.name} */}
-                  Austin
+                  {firstName}{" "}
                 </Typography>
                 <Typography
                   fontSize="0.8rem"
