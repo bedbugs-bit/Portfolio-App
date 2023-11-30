@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -7,18 +7,65 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import userLogo from "assets/home-profile.jpg";
+import userLogo from "assets/home-profile.jpg"; // Make sure the path is correct
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../Firebase";
 
 export default function HomeInfo() {
   const theme = useTheme();
-  const isNonMobile = useMediaQuery("(min-width: 1300px)");
+  const isNonMobile = useMediaQuery("(min-width:1300px)");
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
-  const userData = {
-    name: "Austin Grey",
-    skills: ["JavaScript", "React", "Node.js"],
-    bio: "I have been a software engineer for 10 years. I love to code and learn new technologies.",
-  };
+  const [userData, setUserData] = useState({
+    name: "Guest",
+    skills: [],
+    bio: "Loading...",
+    workExperience: [],
+  });
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        try {
+          const userSnap = await getDoc(userRef);
+
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            setUserData({
+              name: `${data.firstName} ${data.lastName}`, // Concatenate first name and last name
+              skills: data.skills ? data.skills.split(", ") : [],
+              bio: data.bio || "Welcome to my profile!",
+              workExperience: data.workExperience
+                ? data.workExperience.split(", ")
+                : [],
+              // ... you can spread other data fields if needed
+            });
+          } else {
+            console.log("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          setUserData({
+            name: "Guest",
+            skills: [],
+            bio: "An error occurred.",
+            workExperience: [],
+          });
+        }
+      } else {
+        setUserData({
+          name: "Guest",
+          skills: [],
+          bio: "No user is signed in.",
+          workExperience: [],
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <Box
@@ -78,9 +125,9 @@ export default function HomeInfo() {
               p: 2,
             }}
           >
-            {userData.skills.map((skill) => (
+            {userData.skills.map((skill, index) => (
               <Button
-                key={skill}
+                key={index}
                 variant="contained"
                 sx={{
                   m: 1,
@@ -104,8 +151,8 @@ export default function HomeInfo() {
         width={isNonMobile ? "400px" : "400px"}
         height={isNonMobile ? "400px" : "400px"}
         style={{ borderRadius: "80px 30px" }}
-        alt="logo"
-      ></img>
+        alt="profile"
+      />
     </Box>
   );
 }

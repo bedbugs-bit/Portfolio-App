@@ -6,6 +6,7 @@ import Sidebar from "components/Sidebar";
 import Navbar from "components/Navbar";
 import HomeInfo from "components/HomeInfo";
 import Projects from "components/Projects";
+import UserDetails from "components/UserDetails";
 
 
 import GithubActivity from "components/GithubActivity";
@@ -100,6 +101,12 @@ console.log(Imageurl)
         <Box id="home-info">
           <HomeInfo />
         </Box>
+        {/* User data display section */}
+        <Box id="projects-info">
+          <UserDetails />
+        </Box>
+        {/* User data display section */}
+
         <Box id="projects-info">
           <Projects extractedData={extractedData}/>
         </Box>

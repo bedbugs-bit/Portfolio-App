@@ -1,5 +1,15 @@
-import React, { useState } from "react";
-import { Box } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Button,
+  Menu,
+  MenuItem,
+  useTheme,
+} from "@mui/material";
 import {
   Menu as MenuIcon,
   SettingsOutlined,
@@ -9,27 +19,54 @@ import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
 import { setMode } from "state";
 import profilePhoto from "assets/profile.jpg";
-import {
-  useTheme,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Button,
-  Menu,
-  MenuItem,
-} from "@mui/material";
 import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
+import { auth, db } from "../Firebase"; // Ensure db is imported here
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth"; // firebase signout
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ isSidebarOpen, setIsSidebarOpen, Imageurl }) {
   const dispatch = useDispatch();
   const theme = useTheme();
-
+  const navigate = useNavigate(); // useNavigate hook called here
   const [anchorEl, setAnchorEl] = useState(null);
+  const [firstName, setFirstName] = useState(""); // State to hold the user's first name
+
   const isOpen = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        try {
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            setFirstName(userSnap.data().firstName); // Set the first name
+          } else {
+            console.log("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    });
+
+    return () => unsubscribe(); // Unsubscribe on cleanup
+  }, []);
+
+  // Function to logout the current user
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out: ", error.message);
+    }
+  };
 
   return (
     <Box>
@@ -44,25 +81,9 @@ export default function Navbar({ isSidebarOpen, setIsSidebarOpen, Imageurl }) {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           {/* Left Side of the Navbar */}
           <FlexBetween>
-            <IconButton
-              onClick={() => {
-                console.log("open/close sidebar");
-                setIsSidebarOpen(!isSidebarOpen);
-              }}
-            >
+            <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
               <MenuIcon />
             </IconButton>
-            {/* <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-          backgroundColor={theme.palette.primary.alt}
-          borderRadius="10px"
-          gap="3rem"
-          p="0.1rem 1.5rem"
-        ></Box> */}
           </FlexBetween>
 
           {/* Right Side of the Navbar */}
@@ -104,8 +125,8 @@ export default function Navbar({ isSidebarOpen, setIsSidebarOpen, Imageurl }) {
                     fontSize="0.85rem"
                     sx={{ color: theme.palette.primary.main }}
                   >
-                    {/* user display name */}
-                    Austin
+                    {firstName}{" "}
+                    {/* Display the user's first name dynamically */}
                   </Typography>
                   <Typography
                     fontSize="0.75rem"
@@ -124,7 +145,7 @@ export default function Navbar({ isSidebarOpen, setIsSidebarOpen, Imageurl }) {
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
               >
-                <MenuItem onClick={handleClose}>Log Out</MenuItem>
+                <MenuItem onClick={handleLogout}>Log Out</MenuItem>
               </Menu>
             </FlexBetween>
           </FlexBetween>
