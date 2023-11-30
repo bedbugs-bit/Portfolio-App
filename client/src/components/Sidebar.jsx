@@ -22,7 +22,7 @@ import FlexBetween from "./FlexBetween";
 import profilePhoto from "assets/profile.jpg";
 import logoPhoto from "assets/github.svg";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 
 import { auth, db } from "../Firebase"; // Ensure db is imported here
@@ -46,6 +46,12 @@ export default function Sidebar({
     },
 
     {
+      text: "User Details",
+      icon: <PersonOutlineIcon />,
+      link: "#projects-info",
+    },
+
+    {
       text: "Projects",
       icon: <WorkOutlineOutlinedIcon />,
       link: "#projects-info",
@@ -54,11 +60,6 @@ export default function Sidebar({
     {
       text: "Github Activity",
       icon: <HistoryOutlinedIcon />,
-    },
-
-    {
-      text: "Add Project",
-      icon: <AddBoxOutlinedIcon />,
     },
   ];
 
