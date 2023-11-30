@@ -79,7 +79,7 @@ function Project({ id, name, category, description, rating, reviews }) {
   );
 }
 
-export default function Projects() {
+{/*export default function Projects() {
   const data = [
     {
       id: 1,
@@ -209,4 +209,30 @@ export default function Projects() {
       )}
     </Box>
   );
+}*/}
+
+export default function Projects({extractedData}){
+  const theme = useTheme();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  return(
+    <Box display={isNonMobile ? "flex" : "block"} width="100%" height="100%" bgcolor= {theme.palette.background.default}>
+    {/* Sidebar and other components ... */}
+
+    <Box color={theme.palette.secondary.main} display="grid" gridTemplateColumns="auto auto auto" gap={5} p={2}>
+      {extractedData.map((repo, index) => (
+        <div key={index} style={{
+          backgroundColor: theme.palette.primary.main,
+          borderRadius: '15px',
+          padding: '15px',
+          textAlign: 'center',
+        }}>
+          <p>{repo.name}</p>
+          <p>Language: {repo.language}</p>
+          <p>{repo.visibility}</p>
+          <p>HTML URL: <a href={repo.html_url} target="_blank" rel="noopener noreferrer">{repo.html_url}</a></p>
+        </div>
+      ))}
+    </Box>
+  </Box>
+  )
 }

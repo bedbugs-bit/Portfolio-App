@@ -26,6 +26,7 @@ import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 
 export default function Sidebar({
+  Imageurl,
   user,
   drawerWidth,
   isSidebarOpen,
@@ -174,7 +175,7 @@ export default function Sidebar({
               <Box
                 component="img"
                 alt="profile"
-                src={profilePhoto}
+                src={Imageurl}
                 height="40px"
                 width="40px"
                 borderRadius="70%"

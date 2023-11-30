@@ -22,7 +22,7 @@ import {
 import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 
-export default function Navbar({ isSidebarOpen, setIsSidebarOpen }) {
+export default function Navbar({ isSidebarOpen, setIsSidebarOpen, Imageurl }) {
   const dispatch = useDispatch();
   const theme = useTheme();
 
@@ -92,7 +92,7 @@ export default function Navbar({ isSidebarOpen, setIsSidebarOpen }) {
                 <Box
                   component="img"
                   alt="profile"
-                  src={profilePhoto}
+                  src={Imageurl}
                   height="32px"
                   width="32px"
                   borderRadius="70%"
