@@ -14,7 +14,6 @@ function App() {
   const mode = useSelector((state) => state.global.mode);
   const theme = useMemo(() => {
     const themeSetting = themeSettings(mode);
-    console.log(themeSetting); // This will log the theme settings for 'light-1'
     return createTheme(themeSetting);
   }, [mode]);
 

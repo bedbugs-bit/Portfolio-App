@@ -1,87 +1,99 @@
 import React, { useEffect, useState } from "react";
 import { Box, useMediaQuery } from "@mui/material";
-
-
 import Sidebar from "components/Sidebar";
 import Navbar from "components/Navbar";
 import HomeInfo from "components/HomeInfo";
 import Projects from "components/Projects";
 import UserDetails from "components/UserDetails";
-
-
 import GithubActivity from "components/GithubActivity";
+import { auth, db } from "../Firebase"; // Ensure db is imported here
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Dashboard() {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [Imageurl,SetImageUrl] = useState("");
-  // temporary userId for testing. Will be removed later.
-  // const userID
-  // const data
-
+  const [imageURL, setImageURL] = useState("");
+  const [username, setUsername] = useState("");
   const [extractedData, setExtractedData] = useState([]);
 
-  const accessToken = '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';
-  const authenticatedUsername = 'Samkiroko';
+  useEffect(() => {
+    const fetchAndSortGitHubData = async () => {
+      try {
+        if (!username) {
+          console.error("GitHub username is empty.");
+          return;
+        }
 
-  async function fetchAndSortGitHubData() {
-    try {
-      const apiUrl = `https://api.github.com/users/${authenticatedUsername}/repos`;
+        const accessToken = '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'; // Replace with your actual GitHub access token
+        const apiUrl = `https://api.github.com/users/${username}/repos`;
 
-      const response = await fetch(apiUrl, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+        const response = await fetch(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
+        if (response.ok) {
+          const data = await response.json();
 
-        const extractedData = data.map(repo => ({
-          html_url: repo.html_url,
-          language: repo.language,
-          name: repo.name,
-          owner_avatar_url: repo.owner.avatar_url,
-          visibility: repo.visibility,
-        }));
+          const extractedData = data.map((repo) => ({
+            html_url: repo.html_url,
+            language: repo.language,
+            name: repo.name,
+            owner_avatar_url: repo.owner.avatar_url,
+            visibility: repo.visibility,
+          }));
 
-        console.log('Extracted data:', extractedData);
 
-        setExtractedData(extractedData);
-        
-
-        // ... Rest of the code remains the same ...
-      } else {
-        console.error('GitHub API request failed with status:', response.status);
+          setExtractedData(extractedData);
+        } else {
+          console.error('GitHub API request failed with status:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching or sorting data:', error);
       }
-    } catch (error) {
-      console.error('Error fetching or sorting data:', error);
-    }
-  }
+    };
 
-useEffect(() => {
-  fetchAndSortGitHubData();
-}, []); // Empty dependency array to ensure it runs only once on component mount
+    fetchAndSortGitHubData();
+  }, [username]);
 
-useEffect(() => {
-  // Extract the first owner_avatar_url, assuming it's the same for all
-  const firstImageUrl = extractedData.length > 0 ? extractedData[0].owner_avatar_url : '';
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        try {
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const userUsername = userSnap.data().username;
+            setUsername(userUsername);
+          } else {
+            console.log("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    });
 
-  // Call SetImageUrl with the extracted URL
-  SetImageUrl(firstImageUrl);
-}, [extractedData, SetImageUrl]); // Include SetImageUrl in the dependency array
+    return () => unsubscribe(); // Unsubscribe on cleanup
+  }, []);
 
-// ...
+  useEffect(() => {
+    // Extract the first owner_avatar_url, assuming it's the same for all
+    const firstImageUrl = extractedData.length > 0 ? extractedData[0].owner_avatar_url : '';
 
-console.log(Imageurl)
+    // Call SetImageUrl with the extracted URL
+    setImageURL(firstImageUrl);
+  }, [extractedData]);
 
 
   return (
     <Box display={isNonMobile ? "flex" : "block"} width="100%" height="100%">
       {/* Side bar */}
       <Sidebar
-      Imageurl={Imageurl}
-        // user={data || {}}
+        Imageurl={imageURL}
+        Setusername={setUsername}
         isNonMobile={isNonMobile}
         drawerWidth="230px"
         isSidebarOpen={isSidebarOpen}
@@ -91,8 +103,7 @@ console.log(Imageurl)
       <Box flexGrow={1}>
         {/* Navigation */}
         <Navbar
-        Imageurl={Imageurl}
-          // user={data || {}}
+          Imageurl={imageURL}
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />
@@ -102,16 +113,16 @@ console.log(Imageurl)
           <HomeInfo />
         </Box>
         {/* User data display section */}
-        <Box id="projects-info">
+        <Box id="user-details">
           <UserDetails />
         </Box>
-        {/* User data display section */}
-
+        {/* Projects display section */}
         <Box id="projects-info">
-          <Projects extractedData={extractedData}/>
+          <Projects extractedData={extractedData} />
         </Box>
-        <Box id="Activites-info">
-          <GithubActivity authenticatedUsername={authenticatedUsername}/>
+        {/* GitHub activity display section */}
+        <Box id="activities-info">
+          <GithubActivity authenticatedUsername={username} />
         </Box>
       </Box>
     </Box>
