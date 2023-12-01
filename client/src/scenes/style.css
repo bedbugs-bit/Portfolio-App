@@ -5,9 +5,9 @@
 
 .signup {
     background: linear-gradient(135deg, #6e8efb, #a777e3);
-    /* Example gradient */
+    margin-top: 15em;
+    margin-bottom: 15em;
 }
-
 .form_container {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

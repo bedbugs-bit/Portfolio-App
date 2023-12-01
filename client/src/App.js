@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import { themeSettings } from "theme";
 import { createTheme } from "@mui/material/styles";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
