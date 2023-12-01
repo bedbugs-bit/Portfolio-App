@@ -185,7 +185,6 @@ const Signup = () => {
           </div>
 
           <p className="text-right mt-2">
-            Forgot <a href="/reset-password">Password?</a>
             Already Registered
             <Link to="/" className="ms-2">
               Sign in

@@ -1,14 +1,31 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth"; // Import signInWithEmailAndPassword
-import { auth } from "../Firebase"; // Adjust the path as needed
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../Firebase";
 import "./style.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // State for storing error message
-  const navigate = useNavigate(); // useNavigate for navigation
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  // Utility function for custom error messages
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case "auth/invalid-email":
+        return "The email address is badly formatted.";
+      case "auth/user-disabled":
+        return "This user has been disabled. Please contact support.";
+      case "auth/user-not-found":
+        return "There is no user corresponding to this email.";
+      case "auth/wrong-password":
+        return "The password is invalid for the given email.";
+      // Add more cases as needed
+      default:
+        return "An unexpected error occurred. Please try again.";
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -16,10 +33,10 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard"); // Navigate to the home route on successful login
+      navigate("/dashboard"); // Navigate on successful login
     } catch (error) {
       console.error("Error logging in: ", error.message);
-      setError(error.message); // Update the error state with the error message
+      setError(getErrorMessage(error.code)); // Set custom error message
     }
   };
 
@@ -32,8 +49,7 @@ const Login = () => {
             <div className="alert alert-danger" role="alert">
               {error}
             </div>
-          )}{" "}
-          {/* Display error message */}
+          )}
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
               Email
@@ -66,7 +82,8 @@ const Login = () => {
             </button>
           </div>
           <p className="text-right">
-            Forgot <a href="/reset-password">Password?</a>
+            Forgot 
+            <Link  to="/password-reset"> Password?</Link>
             <Link to="/signup" className="ms-2">
               Sign Up?
             </Link>
