@@ -34,6 +34,7 @@ export default function Sidebar({
   isSidebarOpen,
   setIsSidebarOpen,
   isNonMobile,
+  Imageurl,
 }) {
   const theme = useTheme();
   const [firstName, setFirstName] = useState(""); // State to hold the user's first name
@@ -200,7 +201,7 @@ export default function Sidebar({
               <Box
                 component="img"
                 alt="profile"
-                src={profilePhoto}
+                src={Imageurl}
                 height="40px"
                 width="40px"
                 borderRadius="70%"

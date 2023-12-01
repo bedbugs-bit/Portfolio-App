@@ -27,7 +27,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth"; // firebase signout
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar({ isSidebarOpen, setIsSidebarOpen }) {
+export default function Navbar({ isSidebarOpen, setIsSidebarOpen, Imageurl }) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate(); // useNavigate hook called here
@@ -113,7 +113,7 @@ export default function Navbar({ isSidebarOpen, setIsSidebarOpen }) {
                 <Box
                   component="img"
                   alt="profile"
-                  src={profilePhoto}
+                  src={Imageurl}
                   height="32px"
                   width="32px"
                   borderRadius="70%"
