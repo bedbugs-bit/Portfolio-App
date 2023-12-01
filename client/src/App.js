@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import { themeSettings } from "theme";
 import { createTheme } from "@mui/material/styles";
+import PasswordReset from "scenes/PasswordReset";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/password-reset" element={<PasswordReset />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </BrowserRouter>
