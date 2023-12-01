@@ -73,7 +73,7 @@ export default function HomeInfo() {
         display: "flex",
         backgroundColor: theme.palette.primary.main,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "space-around",
         height: "95vh",
         flexDirection: isNonMobile ? "row" : "column",
         margin: isNonMobile ? "50px" : "10px",

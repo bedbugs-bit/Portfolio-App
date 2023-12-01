@@ -30,6 +30,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 export default function Sidebar({
+  Setusername,
   drawerWidth,
   isSidebarOpen,
   setIsSidebarOpen,
@@ -71,7 +72,8 @@ export default function Sidebar({
        try {
          const userSnap = await getDoc(userRef);
          if (userSnap.exists()) {
-           setFirstName(userSnap.data().firstName); // Set the first name
+           setFirstName(userSnap.data().firstName);
+           Setusername(userSnap.data().username); // Set the first name
          } else {
            console.log("No such document!");
          }
