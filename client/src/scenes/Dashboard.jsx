@@ -16,60 +16,54 @@ export default function Dashboard() {
   const [imageURL, setImageURL] = useState("");
   const [username, setUsername] = useState("");
   const [extractedData, setExtractedData] = useState([]);
-  const [accessToken,setAccessToken] = useState("");
 
   var fn1 = () => {
     // Decryption
     var str2 = window.atob('Z2hwXzU0bmEwSUdFc0wzZXNIT0FmMWdwbWRoTll6YzJhRDBUVXJENg==');
-    setAccessToken(str2)
+    console.log('Decrypted:', str2);
    }
   
 
-  // ... (previous code)
+  useEffect(() => {
+    const fetchAndSortGitHubData = async () => {
+      try {
+        if (!username) {
+          console.error("GitHub username is empty.");
+          return;
+        }
 
-useEffect(() => {
-  fn1(); // Ensure fn1 runs first to set the accessToken
+        const accessToken = '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';// Replace with your actual GitHub access token
+        const apiUrl = `https://api.github.com/users/${username}/repos`;
 
-  const fetchAndSortGitHubData = async () => {
-    try {
-      if (!username || !accessToken) {
-        console.error("GitHub username or access token is empty.");
-        return;
+        const response = await fetch(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          const extractedData = data.map((repo) => ({
+            html_url: repo.html_url,
+            language: repo.language,
+            name: repo.name,
+            owner_avatar_url: repo.owner.avatar_url,
+            visibility: repo.visibility,
+          }));
+
+
+          setExtractedData(extractedData);
+        } else {
+          console.error('GitHub API request failed with status:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching or sorting data:', error);
       }
+    };
 
-      const apiUrl = `https://api.github.com/users/${username}/repos`;
-
-      const response = await fetch(apiUrl, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-
-        const extractedData = data.map((repo) => ({
-          html_url: repo.html_url,
-          language: repo.language,
-          name: repo.name,
-          owner_avatar_url: repo.owner.avatar_url,
-          visibility: repo.visibility,
-        }));
-
-        setExtractedData(extractedData);
-      } else {
-        console.error('GitHub API request failed with status:', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching or sorting data:', error);
-    }
-  };
-
-  fetchAndSortGitHubData();
-}, [username, accessToken]); // Include accessToken as a dependency
-
-// ... (rest of the code)
-
+    fetchAndSortGitHubData();
+  }, [username]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
