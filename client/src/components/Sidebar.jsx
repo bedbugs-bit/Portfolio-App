@@ -19,7 +19,6 @@ import {
 } from "@mui/icons-material";
 
 import FlexBetween from "./FlexBetween";
-import profilePhoto from "assets/profile.jpg";
 import logoPhoto from "assets/github.svg";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
@@ -50,7 +49,7 @@ export default function Sidebar({
     {
       text: "User Details",
       icon: <PersonOutlineIcon />,
-      link: "#projects-info",
+      link: "#user-details",
     },
 
     {
@@ -62,29 +61,30 @@ export default function Sidebar({
     {
       text: "Github Activity",
       icon: <HistoryOutlinedIcon />,
+      link: "#activities-info",
     },
   ];
 
- useEffect(() => {
-   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-     if (user) {
-       const userRef = doc(db, "users", user.uid);
-       try {
-         const userSnap = await getDoc(userRef);
-         if (userSnap.exists()) {
-           setFirstName(userSnap.data().firstName);
-           Setusername(userSnap.data().username); // Set the first name
-         } else {
-           console.log("No such document!");
-         }
-       } catch (error) {
-         console.error("Error fetching user data:", error);
-       }
-     }
-   });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        try {
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            setFirstName(userSnap.data().firstName);
+            Setusername(userSnap.data().username); // Set the first name
+          } else {
+            console.log("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    });
 
-   return () => unsubscribe(); // Unsubscribe on cleanup
- }, []);
+    return () => unsubscribe(); // Unsubscribe on cleanup
+  }, [Setusername]);
   // ... rest of the component
 
   return (

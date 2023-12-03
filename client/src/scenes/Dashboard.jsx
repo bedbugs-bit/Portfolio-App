@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Box, useMediaQuery } from "@mui/material";
 import Sidebar from "components/Sidebar";
 import Navbar from "components/Navbar";
@@ -16,13 +16,9 @@ export default function Dashboard() {
   const [imageURL, setImageURL] = useState("");
   const [username, setUsername] = useState("");
   const [extractedData, setExtractedData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  var fn1 = () => {
-    // Decryption
-    var str2 = window.atob('Z2hwXzU0bmEwSUdFc0wzZXNIT0FmMWdwbWRoTll6YzJhRDBUVXJENg==');
-    console.log('Decrypted:', str2);
-   }
-  
+  const accessToken = useMemo(() => process.env.REACT_APP_ACCESS_TOKEN, []);
 
   useEffect(() => {
     const fetchAndSortGitHubData = async () => {
@@ -32,7 +28,6 @@ export default function Dashboard() {
           return;
         }
 
-        const accessToken = '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';// Replace with your actual GitHub access token
         const apiUrl = `https://api.github.com/users/${username}/repos`;
 
         const response = await fetch(apiUrl, {
@@ -52,18 +47,22 @@ export default function Dashboard() {
             visibility: repo.visibility,
           }));
 
-
           setExtractedData(extractedData);
         } else {
-          console.error('GitHub API request failed with status:', response.status);
+          console.error(
+            "GitHub API request failed with status:",
+            response.status
+          );
         }
       } catch (error) {
-        console.error('Error fetching or sorting data:', error);
+        console.error("Error fetching or sorting data:", error);
       }
     };
 
-    fetchAndSortGitHubData();
-  }, [username]);
+    if (accessToken && username) {
+      fetchAndSortGitHubData();
+    }
+  }, [username, accessToken]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -87,13 +86,21 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000); // Change this to the amount of delay you want
+
+    return () => clearTimeout(timer); // Clear the timer if the component unmounts
+  }, []);
+
+  useEffect(() => {
     // Extract the first owner_avatar_url, assuming it's the same for all
-    const firstImageUrl = extractedData.length > 0 ? extractedData[0].owner_avatar_url : '';
+    const firstImageUrl =
+      extractedData.length > 0 ? extractedData[0].owner_avatar_url : "";
 
     // Call SetImageUrl with the extracted URL
     setImageURL(firstImageUrl);
   }, [extractedData]);
-
 
   return (
     <Box display={isNonMobile ? "flex" : "block"} width="100%" height="100%">
@@ -129,7 +136,7 @@ export default function Dashboard() {
         </Box>
         {/* GitHub activity display section */}
         <Box id="activities-info">
-          <GithubActivity authenticatedUsername={username} />
+          {!isLoading && <GithubActivity authenticatedUsername={username} />}
         </Box>
       </Box>
     </Box>
