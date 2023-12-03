@@ -17,6 +17,13 @@ export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [extractedData, setExtractedData] = useState([]);
 
+  var fn1 = () => {
+    // Decryption
+    var str2 = window.atob('Z2hwXzU0bmEwSUdFc0wzZXNIT0FmMWdwbWRoTll6YzJhRDBUVXJENg==');
+    console.log('Decrypted:', str2);
+   }
+  
+
   useEffect(() => {
     const fetchAndSortGitHubData = async () => {
       try {
@@ -25,7 +32,7 @@ export default function Dashboard() {
           return;
         }
 
-        const accessToken = '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'; // Replace with your actual GitHub access token
+        const accessToken = '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';// Replace with your actual GitHub access token
         const apiUrl = `https://api.github.com/users/${username}/repos`;
 
         const response = await fetch(apiUrl, {
