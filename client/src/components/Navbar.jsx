@@ -18,7 +18,6 @@ import {
 import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
 import { setMode } from "state";
-import profilePhoto from "assets/profile.jpg";
 import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import { auth, db } from "../Firebase"; // Ensure db is imported here
