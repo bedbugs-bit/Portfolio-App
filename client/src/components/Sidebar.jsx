@@ -114,17 +114,17 @@ export default function Sidebar({
             <Box m="1.5rem 2rem 2rem 3rem">
               <FlexBetween color={theme.palette.secondary.main}>
                 <Box display="flex" gap="0.5rem" justifyContent="center">
-                  <img
+                  {/* <img
                     src={logoPhoto}
                     alt="Logo"
                     style={{ width: "50px", height: "50px" }}
-                  />{" "}
+                  />{" "} */}
                   <Typography
                     variant="h3"
                     fontWeight="bold"
                     alignItems="center"
                   >
-                    GitHub Pro
+                    Portfolio
                   </Typography>
                 </Box>
                 {!isNonMobile && (
